@@ -37,4 +37,4 @@ building 'zwei' edge-gateway ........................ done.
 
 * `POST /api/sessions`
 * `POST /api/org`
-* `GET /api/org/:vorg_urn'
+* `GET /api/org/:vorg_urn`
