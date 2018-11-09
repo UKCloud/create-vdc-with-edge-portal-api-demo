@@ -65,7 +65,7 @@ VCR.use_cassette(Time.new.getutc.strftime('%Y-%m-%d_%H-%M-%S'), record: :all) do
       "https://#{options[:vcloud_api_host]}",
       options[:user_api_name],
       options[:user_password],
-      options[:org_name], '5.1'
+      options[:org_name], '27.0'
     )
 
   print 'logging into vCloud ...'
