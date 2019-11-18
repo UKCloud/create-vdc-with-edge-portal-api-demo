@@ -1,0 +1,44 @@
+{
+  "SessionType": {
+    "allOf": [
+      { "$ref": "common.json#/ResourceType" },
+      {
+        "type": "object",
+        "description": "Represents a vCloud Session.",
+        "properties": {
+          "authorizedLocations": {
+            "$ref": "multiSite.json#/AuthorizedLocationsType"
+          },
+          "user": {
+            "type": "string",
+            "description": "The name of the user that owns the session"
+          },
+          "org": {
+            "type": "string",
+            "description": "The name of the user's organization"
+          },
+          "userId": {
+            "type": "string",
+            "description": "The URN of the user entity"
+          },
+          "roles": {
+            "type": "string",
+            "description": "Role assigned to this user during this session."
+          },
+          "locationId": {
+            "type": "string",
+            "description": "Location id of the logged in org"
+          }
+        },
+        "required": [
+          "authorizedLocations",
+          "user",
+          "org",
+          "userId",
+          "roles",
+          "locationId"
+        ]
+      }
+    ]
+  }
+}

@@ -1,2 +1,4 @@
-/*.jar
-/fixtures/vcr_cassettes/*.yml
+/node_modules
+/dist/**.js
+/generated/portal-api/
+/generated/vcloud-rest/

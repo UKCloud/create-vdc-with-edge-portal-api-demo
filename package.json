@@ -1,0 +1,38 @@
+{
+  "name": "create-vdc-with-edge-portal-api-demo",
+  "version": "1.0.0",
+  "description": "Demo of creating a vdc and edge using the UKCloud Portal API",
+  "private": true,
+  "scripts": {
+    "generate-api": "openapi-generator generate -i docs/portal-api/openapi.json -g typescript-axios -o generated/portal-api -c generated/portal-api-options.json && openapi-generator generate -i docs/vcloud-rest/openapi.json -g typescript-axios -o generated/vcloud-rest -c generated/vcloud-rest-options.json",
+    "test": "cd server; cargo test",
+    "prettier:write": "prettier --write '*.{json,md,js,har}' dist/index.html '{docs,src}/**/*.{ts,json}' 'generated/*.json' && (cd server; cargo fmt)",
+    "build": "npm run generate-api && webpack --mode production && (cd server; cargo build --release)",
+    "devrun": "npm run generate-api && webpack --mode development && (cd server; cargo run 127.0.0.1:3000 portal.skyscapecloud.com)",
+    "serve": "./server/target/release/server 127.0.0.1:3000 portal.skyscapecloud.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ukcloud/create-vdc-with-edge-portal-api-demo.git"
+  },
+  "author": "Chris Couzens",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ukcloud/create-vdc-with-edge-portal-api-demo/issues"
+  },
+  "homepage": "https://github.com/ukcloud/create-vdc-with-edge-portal-api-demo#readme",
+  "dependencies": {
+    "@ccouzens/ukcloud-portal-api": "file:generated/portal-api/",
+    "@ccouzens/vcloud-rest": "file:generated/vcloud-rest/",
+    "axios": "^0.19.2"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^1.0.10-4.2.3",
+    "@types/node": "^12.12.26",
+    "prettier": "^1.19.1",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
+}

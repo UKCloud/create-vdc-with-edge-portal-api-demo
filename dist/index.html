@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+    <title>Create VDC demo</title>
+    <style type="text/css">
+      :root {
+        --min-touch-target: 7mm;
+      }
+
+      form#create_vdc_with_edge_form {
+        grid-template-columns: 1fr;
+        display: grid;
+        column-gap: 1em;
+        align-items: center;
+      }
+
+      form#create_vdc_with_edge_form label {
+        grid-column: 1 / 2;
+      }
+
+      form#create_vdc_with_edge_form input {
+        grid-column: -2 / -1;
+      }
+
+      #log,
+      #error_banner {
+        white-space: pre-line;
+        font-family: monospace;
+      }
+
+      #error_banner {
+        color: red;
+      }
+
+      @media (any-pointer: coarse) {
+        input,
+        label {
+          min-height: calc(var(--min-touch-target) / 2);
+        }
+
+        input[type="submit"] {
+          min-height: var(--min-touch-target);
+        }
+
+        input {
+          min-width: var(--min-touch-target);
+        }
+      }
+
+      @media (min-width: 30em) {
+        form#create_vdc_with_edge_form {
+          grid-template-columns: 10em minmax(auto, 30em);
+        }
+
+        form#create_vdc_with_edge_form label {
+          text-align: right;
+        }
+      }
+
+      @media (any-pointer: coarse) and (min-width: 30em) {
+        input {
+          min-height: var(--min-touch-target);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Create VDC with edge Portal API demo</h1>
+    <form id="create_vdc_with_edge_form">
+      <label for="portal_url">Portal URL</label>
+      <input id="portal_url" value="/proxy/portal.skyscapecloud.com" />
+      <label for="vcloud_url">vCloud URL</label>
+      <input
+        id="vcloud_url"
+        value="/proxy/api.vcd.pod0000b.sys00005.portal.skyscapecloud.com"
+      />
+      <label for="portal_email">Portal email</label>
+      <input id="portal_email" type="email" />
+      <label for="vcloud_username">vCloud Username</label>
+      <input id="vcloud_username" />
+      <label for="vcloud_org">vCloud Org</label>
+      <input id="vcloud_org" />
+      <label for="password">Password</label>
+      <input id="password" type="password" />
+      <label for="vdc_name">New VDC Name</label>
+      <input id="vdc_name" type="text" />
+      <input type="submit" value="Go" />
+    </form>
+    <div id="log"></div>
+    <div id="error_banner"></div>
+    <script src="./main.js"></script>
+  </body>
+</html>
