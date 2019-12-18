@@ -1,51 +1,40 @@
 # frozen_string_literal: true
 
-require 'net/http'
 require 'portal/build'
-require 'portal/session'
 require 'webmock/rspec'
+require 'portal_client'
 
 describe(Portal::Build) do
-  let(:session_cookie) { 'user=blah' }
   let(:session_host) { 'portal.local' }
-  let(:session_http_server) do
-    Net::HTTP.new(session_host, Net::HTTP.http_default_port)
-  end
-  let(:session) do
-    instance_double(
-      Portal::Session,
-      cookie: session_cookie,
-      host: session_host,
-      http_server: session_http_server
+  let(:api) do
+    PortalClient::DefaultApi.new(
+      PortalClient::ApiClient.new(
+        PortalClient::Configuration.new { |c| c.host = session_host }
+      )
     )
   end
 
-  let(:route) { '/api/xyz-builds/10' }
+  let(:reload_proc) { api.method(:api_vdc_builds_build_id_get) }
   let(:initial_state) { 'approved' }
-  let(:initial_json_data) do
-    <<-JSON
-    {
-        "data": {
-            "attributes": {
-                "state": "#{initial_state}"
-            }
-        }
-    }
-    JSON
+  let(:id) { '3' }
+  let(:initial_data) do
+    PortalClient::VdcBuildResponse.new(
+      id: id,
+      attributes:
+      PortalClient::VdcBuildResponseAttributes.new(
+        state: initial_state
+      )
+    )
   end
 
-  let(:build) { described_class.new(session, route, initial_json_data) }
+  let(:build) { described_class.new(reload_proc, initial_data) }
 
   describe('#state') do
     it { expect(build.state).to(eq(initial_state)) }
   end
 
-  describe('#session') do
-    it { expect(build.session).to(equal(session)) }
-  end
-
-  describe('#route') do
-    it { expect(build.route).to(equal(route)) }
+  describe('#reload_proc') do
+    it { expect(build.reload_proc).to(equal(reload_proc)) }
   end
 
   context('when approved') do
@@ -70,11 +59,10 @@ describe(Portal::Build) do
   end
 
   describe('#reload') do
-    let(:reload_route) { "http://#{session_host}#{route}" }
+    let(:reload_route) { "https://#{session_host}/api/vdc-builds/#{id}" }
 
     before do
       stub_request(:get, reload_route)
-        .with(headers: { 'Cookie' => session_cookie })
         .to_return(status: response_status, body: reloaded_json_data)
     end
 
@@ -84,6 +72,7 @@ describe(Portal::Build) do
         <<-JSON
         {
           "data": {
+            "id": "#{id}",
             "attributes": {
               "state": "#{reloaded_state}"
             }

@@ -1,34 +1,28 @@
 # frozen_string_literal: true
 
-require 'json'
-require 'net/http'
-require 'portal/session'
+require 'portal_client'
 require 'portal/vorg'
 require 'webmock/rspec'
 
 describe(Portal::Vorg) do
-  let(:session_cookie) { 'user=blah' }
   let(:session_host) { 'portal.local' }
-  let(:session_http_server) do
-    Net::HTTP.new(session_host, Net::HTTP.http_default_port)
-  end
+
   let(:session) do
-    instance_double(
-      Portal::Session,
-      cookie: session_cookie,
-      host: session_host,
-      http_server: session_http_server
+    PortalClient::DefaultApi.new(
+      PortalClient::ApiClient.new(
+        PortalClient::Configuration.new { |c| c.host = session_host }
+      )
     )
   end
-  let(:account_id) { 5 }
-  let(:vorg_id) { 7 }
+  let(:account_id) { '5' }
+  let(:vorg_id) { '7' }
   let(:vorg) { described_class.new(session, account_id, vorg_id) }
 
   describe('#provision_vdc') do
     let(:vdc_name) { 'My VDC' }
     let(:vm_type) { 'POWER' }
     let(:provision_route) do
-      "http://#{session_host}/api/accounts/#{account_id}/vorgs/#{vorg_id}/vdcs"
+      "https://#{session_host}/api/accounts/#{account_id}/vorgs/#{vorg_id}/vdcs"
     end
     let(:provision_vdc!) { vorg.provision_vdc(vdc_name, vm_type) }
     let(:build_route) { '/api/vdc-builds/42' }
@@ -39,7 +33,7 @@ describe(Portal::Vorg) do
             data: {
               type: 'VDC', attributes: { name: vdc_name, vmType: vm_type }
             }
-          }, headers: { 'Cookie' => session_cookie }
+          }
         )
         .to_return(
           status: response_status, body: response_body,
@@ -67,11 +61,12 @@ describe(Portal::Vorg) do
       it('returns a build object') do
         expect(provision_vdc!).to(be_a(Portal::Build))
       end
-      describe('#session') do
-        it { expect(provision_vdc!.session).to(equal(session)) }
-      end
-      describe('#route') do
-        it { expect(provision_vdc!.route).to(eq(build_route)) }
+      describe('#reload_proc') do
+        it do
+          expect(provision_vdc!.reload_proc).to(
+            eq(session.method(:api_vdc_builds_build_id_get))
+          )
+        end
       end
       describe('#state') do
         it { expect(provision_vdc!.state).to(eq(build_state)) }
@@ -81,7 +76,7 @@ describe(Portal::Vorg) do
       let(:response_body) { JSON.dump(nil) }
       let(:response_status) { 400 }
       it('raises an error') do
-        expect { provision_vdc! }.to(raise_error(Portal::Error))
+        expect { provision_vdc! }.to(raise_error(PortalClient::ApiError))
       end
     end
   end

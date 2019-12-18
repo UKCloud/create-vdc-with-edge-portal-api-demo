@@ -1,0 +1,1184 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "UKCloud Portal API",
+    "version": "development"
+  },
+  "servers": [
+    {
+      "url": "https://portal.skyscapecloud.com/",
+      "description": "UKCloud production assured Portal"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "account_id": {
+        "name": "account_id",
+        "in": "path",
+        "description": "The ID of your account",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
+        }
+      },
+      "build_id": {
+        "name": "build_id",
+        "in": "path",
+        "description": "The unique ID of the build",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
+        }
+      },
+      "vorg_id": {
+        "name": "vorg_id",
+        "in": "path",
+        "description": "The ID of the vOrg",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
+        }
+      }
+    },
+    "schemas": {
+      "build_state": {
+        "type": "string",
+        "enum": ["approved", "running", "completed", "failed"]
+      },
+      "created_at": {
+        "description": "When the request for the build was received by the Portal.",
+        "type": "string",
+        "format": "date-time"
+      },
+      "created_by": {
+        "description": "The email address of the user to request the build from the Portal.",
+        "type": "string",
+        "format": "email"
+      },
+      "vdc_urn": {
+        "type": "string",
+        "maxLength": 51,
+        "minLength": 51,
+        "pattern": "^urn:vcloud:vdc:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+      },
+      "edgegateway_build_request": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["EdgeGateway"]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "connectivityType": {
+                "type": "string",
+                "enum": ["Internet", "External"]
+              }
+            },
+            "required": ["connectivityType"]
+          }
+        },
+        "required": ["type", "attributes"]
+      },
+      "edgegateway_build_response": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["EdgeGateway-build"]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "createdAt": {
+                "$ref": "#/components/schemas/created_at"
+              },
+              "createdBy": {
+                "$ref": "#/components/schemas/created_by"
+              },
+              "state": {
+                "$ref": "#/components/schemas/build_state"
+              }
+            },
+            "required": ["createdAt", "createdBy", "state"]
+          }
+        },
+        "required": ["type", "attributes", "id"]
+      },
+      "vdc_build_vmType": {
+        "description": "The type of VM workloads used in the VDC",
+        "type": "string",
+        "enum": ["ESSENTIAL", "POWER", "PRIORITY"]
+      },
+      "vdc_build_request": {
+        "title": "VDC-build",
+        "description": "VDC to build",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["VDC"]
+              },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "vmType": {
+                    "$ref": "#/components/schemas/vdc_build_vmType"
+                  },
+                  "name": {
+                    "description": "The name of the VDC",
+                    "type": "string",
+                    "maxLength": 32,
+                    "pattern": "^[^\\+]*$"
+                  }
+                },
+                "required": ["vmType", "name"]
+              }
+            },
+            "required": ["type", "attributes"]
+          }
+        },
+        "required": ["data"]
+      },
+      "vdc_build_response": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["VDC-build"]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "createdAt": {
+                "$ref": "#/components/schemas/created_at"
+              },
+              "createdBy": {
+                "$ref": "#/components/schemas/created_by"
+              },
+              "state": {
+                "$ref": "#/components/schemas/build_state"
+              },
+              "vdcName": {
+                "description": "The name of the VDC",
+                "type": "string"
+              },
+              "vmType": {
+                "$ref": "#/components/schemas/vdc_build_vmType"
+              },
+              "serviceName": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "required": [
+              "createdAt",
+              "createdBy",
+              "state",
+              "vdcName",
+              "vmType",
+              "serviceName"
+            ]
+          }
+        },
+        "required": ["type", "attributes", "id"]
+      },
+      "vorg_build_serviceName": {
+        "description": "The name of the vOrg",
+        "type": "string"
+      },
+      "vorg_build_zoneId": {
+        "description": "The zone of the vOrg",
+        "type": "string",
+        "pattern": "^[A-F0-9]+$"
+      },
+      "vorg_build_request": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["Vorg"]
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "#/components/schemas/vorg_build_serviceName"
+              },
+              "zoneId": {
+                "$ref": "#/components/schemas/vorg_build_zoneId"
+              }
+            },
+            "required": ["serviceName", "zoneId"]
+          }
+        },
+        "required": ["type", "attributes"]
+      },
+      "vorg_build_response": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["Vorg-build"]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "createdAt": {
+                "$ref": "#/components/schemas/created_at"
+              },
+              "createdBy": {
+                "$ref": "#/components/schemas/created_by"
+              },
+              "state": {
+                "$ref": "#/components/schemas/build_state"
+              },
+              "serviceName": {
+                "$ref": "#/components/schemas/vorg_build_serviceName"
+              },
+              "zoneId": {
+                "$ref": "#/components/schemas/vorg_build_zoneId"
+              }
+            },
+            "required": [
+              "createdAt",
+              "createdBy",
+              "state",
+              "serviceName",
+              "zoneId"
+            ]
+          }
+        },
+        "required": ["type", "attributes", "id"]
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "The user could not be authenticated"
+      }
+    }
+  },
+  "paths": {
+    "/api/accounts": {
+      "get": {
+        "summary": "Returns a list of accounts associated with the current user",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apiaccounts"
+        },
+        "responses": {
+          "200": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The Portal accounts that your user has access to",
+                  "items": {
+                    "title": "Account",
+                    "properties": {
+                      "id": {
+                        "description": "The ID of the account",
+                        "type": "integer"
+                      },
+                      "name": {
+                        "description": "The name of the account",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id", "name"],
+                    "type": "object",
+                    "additionalProperties": false
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                "example": [
+                  {
+                    "name": "UKCloud Development Team",
+                    "id": 48
+                  },
+                  {
+                    "name": "Demo",
+                    "id": 1
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/accounts/{account_id}/api_credentials": {
+      "get": {
+        "summary": "Returns a list of vCloud API credentials associated with the specified account",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apiaccountsaccount_idapi_credentials"
+        },
+        "responses": {
+          "200": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The vCloud Director API credentials for a given account",
+                  "type": "object",
+                  "additionalProperties": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "title": "vCloud credentials",
+                    "properties": {
+                      "service_id": {
+                        "pattern": "^\\d+-\\d+-\\d+-[a-zA-Z0-9]{5,6}$",
+                        "type": "string"
+                      },
+                      "username": {
+                        "pattern": "^\\d+.\\d+.[a-zA-Z0-9]{6}@\\d+-\\d+-\\d+-[a-zA-Z0-9]{5,6}$",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["service_id", "username"]
+                  }
+                },
+                "example": {
+                  "UKCloud Demo (1-1-1-9836cf)": {
+                    "service_id": "1-1-1-9836cf",
+                    "username": "11.12.132f4c@1-1-1-9836cf"
+                  },
+                  "UKCloud Test (1-1-2-883623)": {
+                    "service_id": "1-1-2-883623",
+                    "username": "11.12.132f4c@1-1-2-883623"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/account_id"
+        }
+      ]
+    },
+    "/api/accounts/{account_id}/edge-gateway-builds": {
+      "get": {
+        "summary": "Returns information about all self-service edge gateway builds for an account",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apiaccountsaccount_idedge-gateway-builds"
+        },
+        "responses": {
+          "200": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Edge-gateway-builds",
+                  "description": "The Edge gateway builds within this account",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/edgegateway_build_response"
+                      }
+                    }
+                  },
+                  "required": ["data"]
+                },
+                "example": {
+                  "data": [
+                    {
+                      "type": "EdgeGateway-build",
+                      "id": "23",
+                      "attributes": {
+                        "createdAt": "2016-07-08T10:42:14+01:00",
+                        "createdBy": "auser@example.com",
+                        "state": "completed"
+                      }
+                    },
+                    {
+                      "type": "EdgeGateway-build",
+                      "id": "24",
+                      "attributes": {
+                        "createdAt": "2016-07-09T10:42:14+01:00",
+                        "createdBy": "auser@example.com",
+                        "state": "completed"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/account_id"
+        }
+      ]
+    },
+    "/api/accounts/{account_id}/vdc-builds": {
+      "get": {
+        "summary": "Returns information about all self-service VDC builds for an account",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apiaccountsaccount_idvdc-builds"
+        },
+        "responses": {
+          "200": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "VDC-builds",
+                  "description": "The VDC builds within this account",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/vdc_build_response"
+                      }
+                    }
+                  },
+                  "required": ["data"]
+                },
+                "example": {
+                  "data": [
+                    {
+                      "type": "VDC-build",
+                      "id": "10",
+                      "attributes": {
+                        "createdAt": "2016-07-08T10:42:14+01:00",
+                        "createdBy": "auser@example.com",
+                        "state": "completed",
+                        "vdcName": "My VDC",
+                        "vmType": "POWER",
+                        "serviceName": "My Compute Service"
+                      }
+                    },
+                    {
+                      "type": "VDC-build",
+                      "id": "11",
+                      "attributes": {
+                        "createdAt": "2016-07-09T10:42:14+01:00",
+                        "createdBy": "auser@example.com",
+                        "state": "completed",
+                        "vdcName": "My VDC",
+                        "vmType": "POWER",
+                        "serviceName": "My Compute Service"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/account_id"
+        }
+      ]
+    },
+    "/api/accounts/{account_id}/vorg-builds": {
+      "get": {
+        "summary": "Returns information about all self-service vOrg builds for an account",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apiaccountsaccount_idvorg-builds"
+        },
+        "responses": {
+          "200": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "vOrg-builds",
+                  "description": "The vOrg builds within this account",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/vorg_build_response"
+                      }
+                    }
+                  },
+                  "required": ["data"]
+                },
+                "example": {
+                  "data": [
+                    {
+                      "type": "Vorg-build",
+                      "id": "10",
+                      "attributes": {
+                        "createdAt": "2016-07-08T10:42:14+01:00",
+                        "createdBy": "auser@example.com",
+                        "state": "approved",
+                        "serviceName": "My Compute Service",
+                        "zoneId": "B"
+                      }
+                    },
+                    {
+                      "type": "Vorg-build",
+                      "id": "11",
+                      "attributes": {
+                        "createdAt": "2016-07-09T10:42:14+01:00",
+                        "createdBy": "auser@example.com",
+                        "state": "running",
+                        "serviceName": "My Compute Service",
+                        "zoneId": "B"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/account_id"
+        }
+      ]
+    },
+    "/api/accounts/{account_id}/vorgs": {
+      "get": {
+        "summary": "Returns a list of basic information about VMware compute services (vOrgs) associated with the specified account",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apiaccountsaccount_idvorgs"
+        },
+        "responses": {
+          "200": {
+            "description": "list of basic information about VMware compute services (vOrgs)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["data"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "title": "vOrgs",
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^\\d+-\\d+$"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["vOrg"]
+                          },
+                          "attributes": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": ["name"]
+                          }
+                        },
+                        "required": ["id", "type", "attributes"]
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "42-56",
+                      "type": "vOrg",
+                      "attributes": {
+                        "name": "Proof of Concept"
+                      }
+                    },
+                    {
+                      "id": "42-57",
+                      "type": "vOrg",
+                      "attributes": {
+                        "name": "Second vOrg"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a vOrg in the specified account in the specified zone",
+        "description": "Creates a vOrg in the specified account in the specified zone.\nThe authenticated user who creates the vOrg is automatically granted full administrative control of the compute service, enabling creation of VDCs and edge gateways immediately via the Portal API.",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#post-apiaccountsaccount_idvorgs"
+        },
+        "requestBody": {
+          "description": "Org details to create",
+          "content": {
+            "application/json": {
+              "example": {
+                "data": {
+                  "type": "Vorg",
+                  "attributes": {
+                    "zoneId": "B",
+                    "name": "DEMO"
+                  }
+                }
+              },
+              "schema": {
+                "title": "vOrg-build",
+                "description": "vOrg to build",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "$ref": "#/components/schemas/vorg_build_request"
+                  }
+                },
+                "required": ["data"]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "type": "Vorg-build",
+                    "id": "10",
+                    "attributes": {
+                      "createdAt": "2016-07-08T10:42:14+01:00",
+                      "createdBy": "auser@example.com",
+                      "state": "approved",
+                      "serviceName": "My Compute Service",
+                      "zoneId": "B"
+                    }
+                  }
+                },
+                "schema": {
+                  "title": "vOrg-build",
+                  "description": "Progress of a Vorg-build",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/vorg_build_response"
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/account_id"
+        }
+      ]
+    },
+    "/api/accounts/{account_id}/vorgs/{vorg_id}/vdcs": {
+      "get": {
+        "summary": "Returns a list of basic information about the virtual data centres (VDCs) in the specified account under the specified vOrg",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apiaccountsaccount_idvorgsvorg_idvdcs"
+        },
+        "responses": {
+          "200": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["data"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "title": "VDCs",
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "$ref": "#/components/schemas/vdc_urn"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["VDC"]
+                          },
+                          "attributes": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": ["name"]
+                          }
+                        },
+                        "required": ["id", "type", "attributes"]
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "53-12-3",
+                      "type": "VDC",
+                      "attributes": {
+                        "name": "My VDC"
+                      }
+                    },
+                    {
+                      "id": "53-12-5",
+                      "type": "VDC",
+                      "attributes": {
+                        "name": "My Second VDC"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a VDC in the specified account under the specified compute service (vOrg)",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#post-apiaccountsaccount_idvorgsvorg_idvdcs"
+        },
+        "requestBody": {
+          "description": "VDC details to create",
+          "content": {
+            "application/json": {
+              "example": {
+                "data": {
+                  "type": "VDC",
+                  "attributes": {
+                    "vmType": "POWER",
+                    "name": "DEMO"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/vdc_build_request"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "type": "VDC-build",
+                    "id": "10",
+                    "attributes": {
+                      "createdAt": "2016-07-08T10:42:14+01:00",
+                      "createdBy": "auser@example.com",
+                      "state": "approved",
+                      "vdcName": "My VDC",
+                      "vmType": "POWER",
+                      "serviceName": "My Compute Sercice"
+                    }
+                  }
+                },
+                "schema": {
+                  "title": "VDC-build",
+                  "description": "Progress of a VDC-build",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/vdc_build_response"
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/account_id"
+        },
+        {
+          "$ref": "#/components/parameters/vorg_id"
+        }
+      ]
+    },
+    "/api/accounts/{account_id}/vorgs/{vorg_id}/vdcs/{vdc_urn}/edge-gateways": {
+      "post": {
+        "summary": "Creates an edge gateway in the specified account under the specified organisation and VDC",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#post-apiaccountsaccount_idvorgsvorg_idvdcsvdc_urnedge-gateways"
+        },
+        "requestBody": {
+          "description": "Edge-gateway details to create",
+          "content": {
+            "application/json": {
+              "example": {
+                "data": {
+                  "type": "EdgeGateway",
+                  "attributes": { "connectivityType": "Internet" }
+                }
+              },
+              "schema": {
+                "title": "Edge-gateway-build request",
+                "description": "Edge-gateway to build",
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "$ref": "#/components/schemas/edgegateway_build_request"
+                  }
+                },
+                "required": ["data"]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "type": "EdgeGateway-build",
+                    "id": "23",
+                    "attributes": {
+                      "createdAt": "2016-07-08T10:42:14+01:00",
+                      "createdBy": "auser@example.com",
+                      "state": "approved"
+                    }
+                  }
+                },
+                "schema": {
+                  "title": "Edge-gateway-build",
+                  "description": "Progress of a Edge-gateway-build",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/edgegateway_build_response"
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/account_id"
+        },
+        {
+          "$ref": "#/components/parameters/vorg_id"
+        },
+        {
+          "name": "vdc_urn",
+          "in": "path",
+          "description": "The full URN of the VDC in which you want to create the edge gateway, including the urn:vcloud:vdc: prefix",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/vdc_urn"
+          }
+        }
+      ]
+    },
+    "/api/authenticate": {
+      "post": {
+        "summary": "Authenticates your API session",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#post-apiauthenticate"
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "additionalProperties": false,
+                "properties": {
+                  "email": {
+                    "description": "User's email address",
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "description": "User's password",
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              },
+              "example": {
+                "email": "email@example.com",
+                "password": "password"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The authentication request was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["expire_after"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "expire_after": {
+                      "description": "Amount of time (in seconds) that the session is valid for",
+                      "type": "integer",
+                      "format": "int32",
+                      "minimum": 0
+                    }
+                  }
+                },
+                "example": {
+                  "expire_after": 900
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/edge-gateway-builds/{build_id}": {
+      "get": {
+        "summary": "Provides information about the progress of a specific edge gateway build",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apiedge-gateway-buildsbuild_id"
+        },
+        "responses": {
+          "200": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "type": "EdgeGateway-build",
+                    "id": "23",
+                    "attributes": {
+                      "createdAt": "2016-07-08T10:42:14+01:00",
+                      "createdBy": "auser@example.com",
+                      "state": "completed"
+                    }
+                  }
+                },
+                "schema": {
+                  "title": "EdgeGateway-build",
+                  "description": "Progress of an EdgeGateway-build",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/edgegateway_build_response"
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/build_id"
+        }
+      ]
+    },
+    "/api/ping": {
+      "get": {
+        "summary": "An endpoint to test API functionality",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apiping"
+        },
+        "responses": {
+          "200": {
+            "description": "The request was successful"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/vdc-builds/{build_id}": {
+      "get": {
+        "summary": "Returns information about the progress of a specific VDC build",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apivdc-buildsbuild_id"
+        },
+        "responses": {
+          "200": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "type": "VDC-build",
+                    "id": "10",
+                    "attributes": {
+                      "createdAt": "2016-07-08T10:42:14+01:00",
+                      "createdBy": "auser@example.com",
+                      "state": "completed",
+                      "vdcName": "My VDC",
+                      "vmType": "POWER",
+                      "serviceName": "My Compute Service"
+                    }
+                  }
+                },
+                "schema": {
+                  "title": "VDC-build",
+                  "description": "Progress of a VDC-build",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/vdc_build_response"
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/build_id"
+        }
+      ]
+    },
+    "/api/vorg-builds/{build_id}": {
+      "get": {
+        "summary": "Returns information about the progress of a specific vOrg build",
+        "externalDocs": {
+          "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apivorg-buildsbuild_id"
+        },
+        "responses": {
+          "200": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "type": "Vorg-build",
+                    "id": "10",
+                    "attributes": {
+                      "createdAt": "2016-07-08T10:42:14+01:00",
+                      "createdBy": "auser@example.com",
+                      "state": "approved",
+                      "serviceName": "My Compute Service",
+                      "zoneId": "B"
+                    }
+                  }
+                },
+                "schema": {
+                  "title": "vOrg-build",
+                  "description": "Progress of a Vorg-build",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/vorg_build_response"
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/build_id"
+        }
+      ]
+    }
+  }
+}

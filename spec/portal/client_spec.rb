@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'http-cookie'
 require 'portal/client'
 require 'webmock/rspec'
 
@@ -10,10 +9,6 @@ describe(Portal::Client) do
   let(:password) { 'mypassword' }
 
   let(:client) { described_class.new(host, username, password) }
-
-  describe('#host') do
-    it { expect(client.host).to(eq(host)) }
-  end
 
   describe('#session') do
     let(:login_route) { "https://#{host}/api/authenticate" }
@@ -31,21 +26,18 @@ describe(Portal::Client) do
         expect(WebMock).to(have_requested(:post, login_route))
       end
       let(:headers) do
-        { 'set-cookie' => 'rack.session=BAh; path=/api; HttpOnly; secure' }
+        { 'set-cookie' => [
+          'rack.session=BAh; path=/api; HttpOnly; secure', 'b=foo; path=/api'
+        ] }
       end
       let(:status) { 200 }
-      it { is_expected.to(be_a(Portal::Session)) }
-      describe('#client') do
-        it('equals original client') do
-          expect(session.client).to(equal(client))
-        end
+      it { is_expected.to(be_a(PortalClient::DefaultApi)) }
+      it('equals original api') do
+        expect(session).to(equal(client.api))
       end
-      describe('#cookie_jar') do
-        let('cookie_jar') { session.cookie_jar }
-        it('has the expected value') do
-          expect(HTTP::Cookie.cookie_value(cookie_jar.cookies(login_route)))
-            .to(eq('rack.session=BAh'))
-        end
+      it('has the cookies') do
+        expect(session.api_client.default_headers['cookie'])
+          .to(eq('b=foo; rack.session=BAh'))
       end
     end
 
@@ -53,24 +45,22 @@ describe(Portal::Client) do
       let(:headers) { {} }
       let(:status) { 401 }
       it('raises error') do
-        expect { subject }.to(raise_error(Portal::Error))
-      end
-      it('raises invalid authentication error') do
-        expect { subject }.to(raise_error(Portal::InvalidAuthenticationError))
+        expect { subject }.to(raise_error(PortalClient::ApiError))
       end
     end
   end
 
-  describe('#http_server') do
-    let(:http_server) { client.http_server }
-    describe('#address') do
-      it { expect(http_server.address).to(eq(host)) }
-    end
-    describe('#port') do
-      it { expect(http_server.port).to(eq(443)) }
-    end
-    describe('#use_ssl?') do
-      it { expect(http_server.use_ssl?).to(be(true)) }
+  describe('#api') do
+    let(:api) { client.api }
+    describe('#api_client') do
+      let(:api_client) { api.api_client }
+      describe('#config') do
+        let(:config) { api_client.config }
+        describe('#base_url') do
+          let(:base_url) { config.base_url }
+          it { expect(base_url).to(eq("https://#{host}")) }
+        end
+      end
     end
   end
 end
