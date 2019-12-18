@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'http-cookie'
 require 'json'
 require 'net/http'
