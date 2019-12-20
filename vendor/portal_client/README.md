@@ -97,7 +97,6 @@ Class | Method | HTTP request | Description
  - [PortalClient::Account](docs/Account.md)
  - [PortalClient::BuildState](docs/BuildState.md)
  - [PortalClient::EdgeGatewayBuild](docs/EdgeGatewayBuild.md)
- - [PortalClient::EdgeGatewayBuildRequest](docs/EdgeGatewayBuildRequest.md)
  - [PortalClient::EdgeGatewayBuilds](docs/EdgeGatewayBuilds.md)
  - [PortalClient::EdgegatewayBuildRequest](docs/EdgegatewayBuildRequest.md)
  - [PortalClient::EdgegatewayBuildRequestAttributes](docs/EdgegatewayBuildRequestAttributes.md)

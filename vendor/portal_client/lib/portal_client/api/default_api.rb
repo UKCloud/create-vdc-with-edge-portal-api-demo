@@ -573,11 +573,11 @@ module PortalClient
     # @param account_id [Integer] The ID of your account
     # @param vorg_id [Integer] The ID of the vOrg
     # @param vdc_urn [String] The full URN of the VDC in which you want to create the edge gateway, including the urn:vcloud:vdc: prefix
-    # @param edge_gateway_build_request [EdgeGatewayBuildRequest] 
+    # @param edge_gateway_build [EdgeGatewayBuild] 
     # @param [Hash] opts the optional parameters
     # @return [EdgeGatewayBuild]
-    def api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post(account_id, vorg_id, vdc_urn, edge_gateway_build_request, opts = {})
-      data, _status_code, _headers = api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post_with_http_info(account_id, vorg_id, vdc_urn, edge_gateway_build_request, opts)
+    def api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post(account_id, vorg_id, vdc_urn, edge_gateway_build, opts = {})
+      data, _status_code, _headers = api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post_with_http_info(account_id, vorg_id, vdc_urn, edge_gateway_build, opts)
       data
     end
 
@@ -585,10 +585,10 @@ module PortalClient
     # @param account_id [Integer] The ID of your account
     # @param vorg_id [Integer] The ID of the vOrg
     # @param vdc_urn [String] The full URN of the VDC in which you want to create the edge gateway, including the urn:vcloud:vdc: prefix
-    # @param edge_gateway_build_request [EdgeGatewayBuildRequest] 
+    # @param edge_gateway_build [EdgeGatewayBuild] 
     # @param [Hash] opts the optional parameters
     # @return [Array<(EdgeGatewayBuild, Integer, Hash)>] EdgeGatewayBuild data, response status code and response headers
-    def api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post_with_http_info(account_id, vorg_id, vdc_urn, edge_gateway_build_request, opts = {})
+    def api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post_with_http_info(account_id, vorg_id, vdc_urn, edge_gateway_build, opts = {})
       if @api_client.config.debugging
         @api_client.config.logger.debug 'Calling API: DefaultApi.api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post ...'
       end
@@ -625,9 +625,9 @@ module PortalClient
         fail ArgumentError, "invalid value for 'vdc_urn' when calling DefaultApi.api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post, must conform to the pattern #{pattern}."
       end
 
-      # verify the required parameter 'edge_gateway_build_request' is set
-      if @api_client.config.client_side_validation && edge_gateway_build_request.nil?
-        fail ArgumentError, "Missing the required parameter 'edge_gateway_build_request' when calling DefaultApi.api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post"
+      # verify the required parameter 'edge_gateway_build' is set
+      if @api_client.config.client_side_validation && edge_gateway_build.nil?
+        fail ArgumentError, "Missing the required parameter 'edge_gateway_build' when calling DefaultApi.api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post"
       end
       # resource path
       local_var_path = '/api/accounts/{account_id}/vorgs/{vorg_id}/vdcs/{vdc_urn}/edge-gateways'.sub('{' + 'account_id' + '}', CGI.escape(account_id.to_s)).sub('{' + 'vorg_id' + '}', CGI.escape(vorg_id.to_s)).sub('{' + 'vdc_urn' + '}', CGI.escape(vdc_urn.to_s))
@@ -646,7 +646,7 @@ module PortalClient
       form_params = opts[:form_params] || {}
 
       # http body (model)
-      post_body = opts[:body] || @api_client.object_to_http_body(edge_gateway_build_request) 
+      post_body = opts[:body] || @api_client.object_to_http_body(edge_gateway_build) 
 
       # return_type
       return_type = opts[:return_type] || 'EdgeGatewayBuild' 

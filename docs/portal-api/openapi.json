@@ -887,7 +887,7 @@
                 }
               },
               "schema": {
-                "title": "Edge-gateway-build request",
+                "title": "Edge-Gateway-build",
                 "description": "Edge-gateway to build",
                 "type": "object",
                 "properties": {

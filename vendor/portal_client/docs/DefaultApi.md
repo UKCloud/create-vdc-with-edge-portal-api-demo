@@ -394,7 +394,7 @@ No authorization required
 
 ## api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post
 
-> EdgeGatewayBuild api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post(account_id, vorg_id, vdc_urn, edge_gateway_build_request)
+> EdgeGatewayBuild api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post(account_id, vorg_id, vdc_urn, edge_gateway_build)
 
 Creates an edge gateway in the specified account under the specified organisation and VDC
 
@@ -408,11 +408,11 @@ api_instance = PortalClient::DefaultApi.new
 account_id = 56 # Integer | The ID of your account
 vorg_id = 56 # Integer | The ID of the vOrg
 vdc_urn = 'vdc_urn_example' # String | The full URN of the VDC in which you want to create the edge gateway, including the urn:vcloud:vdc: prefix
-edge_gateway_build_request = PortalClient::EdgeGatewayBuildRequest.new # EdgeGatewayBuildRequest | 
+edge_gateway_build = PortalClient::EdgeGatewayBuild.new # EdgeGatewayBuild | 
 
 begin
   #Creates an edge gateway in the specified account under the specified organisation and VDC
-  result = api_instance.api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post(account_id, vorg_id, vdc_urn, edge_gateway_build_request)
+  result = api_instance.api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post(account_id, vorg_id, vdc_urn, edge_gateway_build)
   p result
 rescue PortalClient::ApiError => e
   puts "Exception when calling DefaultApi->api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post: #{e}"
@@ -427,7 +427,7 @@ Name | Type | Description  | Notes
  **account_id** | **Integer**| The ID of your account | 
  **vorg_id** | **Integer**| The ID of the vOrg | 
  **vdc_urn** | **String**| The full URN of the VDC in which you want to create the edge gateway, including the urn:vcloud:vdc: prefix | 
- **edge_gateway_build_request** | [**EdgeGatewayBuildRequest**](EdgeGatewayBuildRequest.md)|  | 
+ **edge_gateway_build** | [**EdgeGatewayBuild**](EdgeGatewayBuild.md)|  | 
 
 ### Return type
 

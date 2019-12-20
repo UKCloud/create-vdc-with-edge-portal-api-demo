@@ -130,7 +130,7 @@ describe 'DefaultApi' do
   # @param account_id The ID of your account
   # @param vorg_id The ID of the vOrg
   # @param vdc_urn The full URN of the VDC in which you want to create the edge gateway, including the urn:vcloud:vdc: prefix
-  # @param edge_gateway_build_request 
+  # @param edge_gateway_build 
   # @param [Hash] opts the optional parameters
   # @return [EdgeGatewayBuild]
   describe 'api_accounts_account_id_vorgs_vorg_id_vdcs_vdc_urn_edge_gateways_post test' do
