@@ -6,7 +6,7 @@ The script will output to the terminal.
 
 Example Usage:
 ```bash
-bin/create-vdc-with-edge-portal-api-demo --user-email=ccouzens+api+demo@ukcloud.com --user-api-name=6395.676.0e09ab --portal-host=portal.skyscapecloud.com --vcloud-api-host=api.vcd.pod0000b.sys00005.portal.skyscapecloud.com --org-name=421-676-2-72a745 funfzehn sechszehn
+bundle exec ruby bin/create-vdc-with-edge-portal-api-demo --user-email=ccouzens+api+demo@ukcloud.com --user-api-name=6395.676.0e09ab --portal-host=portal.skyscapecloud.com --vcloud-api-host=api.vcd.pod0000b.sys00005.portal.skyscapecloud.com --org-name=421-676-2-72a745 funfzehn sechszehn
 Please enter user password:
 logging into vCloud ... done.
 getting org urn ... eaf9a0af-f22e-4588-a884-1cfa43d59f4f
@@ -36,5 +36,5 @@ building 'zwei' edge-gateway ........................ done.
 ### vCloud Director
 
 * `POST /api/sessions`
-* `POST /api/org`
+* `GET /api/org`
 * `GET /api/org/:vorg_urn`
