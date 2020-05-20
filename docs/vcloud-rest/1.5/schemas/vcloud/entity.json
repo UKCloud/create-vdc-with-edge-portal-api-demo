@@ -1,0 +1,47 @@
+{
+  "EntityType": {
+    "allOf": [
+      {
+        "$ref": "common.json#/IdentifiableResourceType"
+      },
+      {
+        "description": "Basic entity type in the vCloud object model. Includes a name, an optional description, and an optional list of links.",
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Optional description.",
+            "nullable": true
+          },
+          "tasks": {
+            "$ref": "#/TasksInProgressType",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the entity."
+          }
+        },
+        "required": ["description", "tasks", "name"]
+      }
+    ]
+  },
+  "TasksInProgressType": {
+    "allOf": [
+      { "$ref": "common.json#/VCloudExtensibleType" },
+      {
+        "description": "A list of queued, running, or recently completed tasks.",
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "array",
+            "description": "A task.",
+            "items": {
+              "$ref": "task.json#/TaskType"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

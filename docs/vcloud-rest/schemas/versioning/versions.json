@@ -1,0 +1,61 @@
+{
+  "SupportedVersionsType": {
+    "type": "object",
+    "description": "List all supported versions.",
+    "properties": {
+      "versionInfo": {
+        "type": "array",
+        "description": "Information about one version of the API.",
+        "items": {
+          "$ref": "#/VersionInfoType"
+        }
+      }
+    },
+    "required": ["versionInfo"]
+  },
+  "VersionInfoType": {
+    "type": "object",
+    "description": "Information for one version of the API.",
+    "properties": {
+      "version": {
+        "type": "string",
+        "description": "Version string."
+      },
+      "loginUrl": {
+        "type": "string",
+        "description": "Login URL for the version."
+      },
+      "mediaTypeMapping": {
+        "type": "array",
+        "description": "Media type mapping. This element is not present when the API version is 5.7 or higher.",
+        "items": {
+          "$ref": "#/MediaTypeMappingType"
+        }
+      },
+      "deprecated": {
+        "type": "boolean",
+        "description": "Indicates whether the API version is deprecated for upcoming removal."
+      }
+    },
+    "required": ["version", "loginUrl", "mediaTypeMapping", "deprecated"]
+  },
+  "MediaTypeMappingType": {
+    "type": "object",
+    "description": "Mapping of a content media type to a xsd complex type.",
+    "properties": {
+      "mediaType": {
+        "type": "string",
+        "description": "Content media type."
+      },
+      "complexTypeName": {
+        "type": "string",
+        "description": "Complex type mapping."
+      },
+      "schemaLocation": {
+        "type": "string",
+        "description": "Location of the schema file describing the complex type."
+      }
+    },
+    "required": ["mediaType", "complexTypeName", "schemaLocation"]
+  }
+}

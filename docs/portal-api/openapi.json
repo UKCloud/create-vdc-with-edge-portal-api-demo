@@ -799,6 +799,7 @@
         }
       },
       "post": {
+        "operationId": "createVdc",
         "summary": "Creates a VDC in the specified account under the specified compute service (vOrg)",
         "externalDocs": {
           "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#post-apiaccountsaccount_idvorgsvorg_idvdcs"
@@ -872,6 +873,7 @@
     },
     "/api/accounts/{account_id}/vorgs/{vorg_id}/vdcs/{vdc_urn}/edge-gateways": {
       "post": {
+        "operationId": "createEdgeGateway",
         "summary": "Creates an edge gateway in the specified account under the specified organisation and VDC",
         "externalDocs": {
           "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#post-apiaccountsaccount_idvorgsvorg_idvdcsvdc_urnedge-gateways"
@@ -883,11 +885,13 @@
               "example": {
                 "data": {
                   "type": "EdgeGateway",
-                  "attributes": { "connectivityType": "Internet" }
+                  "attributes": {
+                    "connectivityType": "Internet"
+                  }
                 }
               },
               "schema": {
-                "title": "Edge-Gateway-build",
+                "title": "Edge-Gateway-build-request",
                 "description": "Edge-gateway to build",
                 "type": "object",
                 "properties": {
@@ -918,7 +922,7 @@
                   }
                 },
                 "schema": {
-                  "title": "Edge-gateway-build",
+                  "title": "Edge-gateway-build-response",
                   "description": "Progress of a Edge-gateway-build",
                   "type": "object",
                   "properties": {
@@ -956,6 +960,7 @@
     },
     "/api/authenticate": {
       "post": {
+        "operationId": "authenticate",
         "summary": "Authenticates your API session",
         "externalDocs": {
           "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#post-apiauthenticate"
@@ -1020,6 +1025,7 @@
     },
     "/api/edge-gateway-builds/{build_id}": {
       "get": {
+        "operationId": "edgeGatewayBuild",
         "summary": "Provides information about the progress of a specific edge gateway build",
         "externalDocs": {
           "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apiedge-gateway-buildsbuild_id"
@@ -1041,7 +1047,7 @@
                   }
                 },
                 "schema": {
-                  "title": "EdgeGateway-build",
+                  "title": "EdgeGateway-build-response",
                   "description": "Progress of an EdgeGateway-build",
                   "type": "object",
                   "properties": {
@@ -1083,6 +1089,7 @@
     },
     "/api/vdc-builds/{build_id}": {
       "get": {
+        "operationId": "vdcBuild",
         "summary": "Returns information about the progress of a specific VDC build",
         "externalDocs": {
           "url": "https://docs.ukcloud.com/articles/portal/ptl-ref-portal-api.html#get-apivdc-buildsbuild_id"

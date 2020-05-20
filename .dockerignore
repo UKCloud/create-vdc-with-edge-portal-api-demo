@@ -1,0 +1,7 @@
+./node_modules/
+./generated/portal-api/*
+./generated/portal-api/.openapi-generator/*
+./generated/vcloud-rest/*
+./generated/vcloud-rest/.openapi-generator/*
+./server/target/
+./dist/*.js

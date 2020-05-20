@@ -1,40 +1,43 @@
 # Create VDC with Edge Portal API Demo
 
-This is a script to demonstrate provisioning a couple VDCs each with an Internet Edge Gateway.
+This is a website to demonstrate using the Portal APIs to provision a VDC with an Internet Edge Gateway.
 
-The script will output to the terminal.
+Usage (Docker):
 
-Example Usage:
 ```bash
-bundle exec ruby bin/create-vdc-with-edge-portal-api-demo --user-email=ccouzens+api+demo@ukcloud.com --user-api-name=6395.676.0e09ab --portal-host=portal.skyscapecloud.com --vcloud-api-host=api.vcd.pod0000b.sys00005.portal.skyscapecloud.com --org-name=421-676-2-72a745 funfzehn sechszehn
-Please enter user password:
-logging into vCloud ... done.
-getting org urn ... eaf9a0af-f22e-4588-a884-1cfa43d59f4f
-logging into Portal ... done.
-initiating build of 'eins' vdc ... done.
-initiating build of 'zwei' vdc ... done.
-building 'eins' vdc ................... done.
-looking for VDC in vCloud Director ... urn:vcloud:vdc:f89fe8f0-69bc-45cf-841d-080e19110722.
-building 'zwei' vdc . done.
-looking for VDC in vCloud Director ... urn:vcloud:vdc:7715e2fe-5166-4ee1-8da7-6e734b02349f.
-initiating build of 'eins' edge-gateway ... done.
-building 'eins' edge-gateway ........................... done.
-initiating build of 'zwei' edge-gateway ... done.
-building 'zwei' edge-gateway ........................ done.
+build_id="$(docker image build . | tee >(cat 1>&2) | tail -n1 | awk '{print $NF}')"
+
+docker container run --rm -itp 127.0.0.1:3000:3000 "$build_id"
+# Navigate to http://127.0.0.1:3000/ in a web browser.
+# Open Developer Tools → Network Inspector to inspect the requests and responses.
+# Fill in and submit the form.
 ```
 
-## Endpoints used
+## APIs
 
-### Portal
+From the Portal, the following routes were used:
 
-* `POST /api/authenticate`
-* `POST /api/accounts/:account_id/vorgs/:vorg_id/vdcs`
-* `GET /api/vdc-builds/:build_id`
-* `POST /api/accounts/:account_id/vorgs/:vorg_id/vdcs/:vdc_urn/edge-gateways`
-* `GET /api/edge-gateway-builds/:build_id`
+- `POST /api/authenticate`
+- `POST /api/accounts/{account_id}/vorgs/{vorg_id}/vdcs`
+- `GET /api/vdc-builds/{build_id}`
+- `POST /api/accounts/{account_id}/vorgs/{vorg_id}/vdcs/{vdc_urn}/edge-gateways`
+- `GET /api/edge-gateway-builds/{build_id}`
 
-### vCloud Director
+From vCloud Director, the following routes were used:
 
-* `POST /api/sessions`
-* `GET /api/org`
-* `GET /api/org/:vorg_urn`
+- `POST /api/sessions`
+- `GET /api/org`
+- `GET /api/org/{vorg_urn}`
+
+Please make use of the OpenAPI specifications.
+Note, that neither specification is currently complete.
+OpenAPI specifications can be used in a variety of ways, such as generating clients, documentation or mock servers.
+
+[Portal OpenAPI Specification](docs/portal-api/openapi.json)
+
+[vCloud Director OpenAPI Specification](docs/vcloud-rest/openapi.json)
+
+Please see the provided [HAR (HTTP ARchive) example](example.har).
+It demonstrates usage of the APIs.
+It can be viewed directly, or through the developer tools of a browser such as [Chrome](https://developers.google.com/web/updates/2017/08/devtools-release-notes#har-imports) or Firefox.
+Note, that the authentication and sessions contained are no longer valid.

@@ -1,0 +1,76 @@
+{
+  "AuthorizedLocationsType": {
+    "type": "object",
+    "description": "Container for AuthorizedLocationType",
+    "properties": {
+      "location": {
+        "description": "Authorized location for the user in this session.",
+        "type": "array",
+        "items": {
+          "$ref": "#/AuthorizedLocationType"
+        }
+      }
+    },
+    "required": ["location"]
+  },
+  "AuthorizedLocationType": {
+    "allOf": [
+      {
+        "$ref": "entity.json#/EntityType"
+      },
+      {
+        "description": "Represents a vCloud Director server group that this session is authorized to access.",
+        "type": "object",
+        "properties": {
+          "locationId": {
+            "type": "string",
+            "description": "The id of the location. format: orgId@siteId"
+          },
+          "locationName": {
+            "type": "string",
+            "nullable": true,
+            "description": "The name of the location."
+          },
+          "siteName": {
+            "type": "string",
+            "nullable": true,
+            "description": "The name of the site."
+          },
+          "orgName": {
+            "type": "string",
+            "nullable": true,
+            "description": "The name of the organization."
+          },
+          "restApiEndpoint": {
+            "type": "string",
+            "description": "The vCloud API endpoint (RestApiBaseUri) for the location."
+          },
+          "uiEndpoint": {
+            "type": "string",
+            "description": "The vCloud Director Web Console (SystemExternalHttpAddress) endpoint for the location."
+          },
+          "useMultisiteToken": {
+            "type": "boolean",
+            "description": "True if the location accepts multisite x-vcloud-authorization token for this user.",
+            "nullable": true
+          },
+          "authContext": {
+            "type": "string",
+            "description": "The auth context for this org",
+            "nullable": true
+          }
+        },
+        "required": [
+          "locationId",
+          "locationName",
+          "siteName",
+          "orgName",
+          "restApiEndpoint",
+          "uiEndpoint",
+          "useMultisiteToken",
+          "authContext"
+        ]
+      }
+    ]
+  }
+}
