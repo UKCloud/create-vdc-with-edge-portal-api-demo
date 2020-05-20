@@ -10,5 +10,5 @@ edition = "2018"
 hyper = "0.13"
 hyper-tls = "0.4"
 http = "0.2"
-cookie = "0.12"
+cookie = "0.13"
 tokio = { version = "0.2", features = ["full"] }
