@@ -1,7 +1,7 @@
 FROM node:12 AS web-compiler
 RUN apt-get update && apt-get install --assume-yes default-jre
 WORKDIR /app
-COPY package.json package-lock.json /app/
+COPY package.json package-lock.json generate-api.bash /app/
 RUN npm install
 COPY generated /app/generated
 COPY docs /app/docs
