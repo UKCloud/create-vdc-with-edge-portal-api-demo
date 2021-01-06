@@ -24,7 +24,7 @@
   "dependencies": {
     "@ccouzens/ukcloud-portal-api": "file:generated/portal-api/",
     "@ccouzens/vcloud-rest": "file:generated/vcloud-rest/",
-    "axios": "^0.19.2"
+    "axios": "^0.21.1"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^1.0.10-4.3.1",
