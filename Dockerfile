@@ -20,7 +20,7 @@ COPY --from=web-compiler /app/dist/ /app/dist
 RUN touch /app/dist/*
 RUN cargo build --release
 
-FROM ubuntu:19.10
+FROM ubuntu:20.04
 RUN apt-get update && apt-get install --assume-yes ca-certificates
 COPY --from=server-compiler /app/server/target/release/server /server
 ENTRYPOINT ["/server", "0.0.0.0:3000"]
