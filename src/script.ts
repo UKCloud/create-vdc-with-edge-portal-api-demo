@@ -6,7 +6,7 @@ import {
   EdgegatewayBuildRequestAttributesConnectivityTypeEnum,
   EdgegatewayBuildRequestTypeEnum
 } from "@ccouzens/ukcloud-portal-api";
-import { DefaultApi as VcloudRestApi } from "@ccouzens/vcloud-rest";
+import { UserApi as VcloudRestApi } from "@ccouzens/vcloud-rest";
 
 const VCLOUD_OPTIONS = {
   headers: { Accept: "application/*+json;version=32.0" }
@@ -35,7 +35,7 @@ export default async (
       password: password,
       accessToken: () => vcloudBearerToken
     },
-    vcloudUrl
+    `${vcloudUrl}/api`
   );
   const portalApi = new PortalApi(undefined, portalUrl);
 
@@ -43,13 +43,13 @@ export default async (
   const vorgId = parseInt(vcloudOrg.split("-")[2]);
 
   logger("logging into vCloud ...");
-  vcloudBearerToken = (await vcloudApi.apiSessionsPost(VCLOUD_OPTIONS)).headers[
+  vcloudBearerToken = (await vcloudApi.sessionsPost(VCLOUD_OPTIONS)).headers[
     "x-vmware-vcloud-access-token"
   ];
   logger("done.");
 
   logger("getting org urn ... ");
-  const orgList = (await vcloudApi.apiOrgGet(VCLOUD_OPTIONS)).data;
+  const orgList = (await vcloudApi.orgGet(VCLOUD_OPTIONS)).data;
   const orgId = orgList.org
     ?.find(org => org.name === vcloudOrg && org.href !== null)
     ?.href?.split("/")
@@ -89,7 +89,7 @@ export default async (
   logger("done.");
 
   logger("looking for VDC in vCloud Director ...");
-  const vdcUrn = (await vcloudApi.apiOrgIdGet(orgId, VCLOUD_OPTIONS)).data.link
+  const vdcUrn = (await vcloudApi.orgIdGet(orgId, VCLOUD_OPTIONS)).data.link
     ?.find(
       link =>
         link.type === "application/vnd.vmware.vcloud.vdc+json" &&
@@ -104,7 +104,7 @@ export default async (
   logger(vdcUrn);
 
   logger("logging out of vCloud Director ...");
-  await vcloudApi.apiSessionDelete(VCLOUD_OPTIONS);
+  await vcloudApi.sessionDelete(VCLOUD_OPTIONS);
   logger("done.");
 
   logger(`initiating build of '${vdcName}' edge-gateway ...`);

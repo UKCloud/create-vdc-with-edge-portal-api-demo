@@ -4,7 +4,7 @@
   "description": "Demo of creating a vdc and edge using the UKCloud Portal API",
   "private": true,
   "scripts": {
-    "generate-api": "openapi-generator generate -i docs/portal-api/openapi.json -g typescript-axios -o generated/portal-api -c generated/portal-api-options.json && openapi-generator generate -i docs/vcloud-rest/openapi.json -g typescript-axios -o generated/vcloud-rest -c generated/vcloud-rest-options.json",
+    "generate-api": "bash generate-api.bash",
     "test": "cd server; cargo test",
     "prettier:write": "prettier --write '*.{json,md,js,har}' dist/index.html '{docs,src}/**/*.{ts,json}' 'generated/*.json' && (cd server; cargo fmt)",
     "build": "npm run generate-api && webpack --mode production && (cd server; cargo build --release)",
